@@ -1,0 +1,192 @@
+{
+  "info": {
+    "_postman_id": "94bd6ae5-11e6-4998-8749-8ed05b6d3b6d",
+    "name": "jobly-backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [{
+      "name": "/companies",
+      "item": [{
+          "name": "GET /companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/companies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "companies"
+              ]
+            },
+            "description": "Gets a list of companies"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /companies (with filtering)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"anderson\",\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/companies?maxEmployees=700&minEmployees=500&name=llc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "companies"
+              ],
+              "query": [{
+                  "key": "maxEmployees",
+                  "value": "700"
+                },
+                {
+                  "key": "minEmployees",
+                  "value": "500"
+                },
+                {
+                  "key": "name",
+                  "value": "llc"
+                },
+                {
+                  "key": "handle",
+                  "value": "ayala",
+                  "description": "doesnt work yet",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "discussion",
+                  "description": "doesnt work yet",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "- name: filer by company name\n- minEmployees: filter to companies that have at least that number of employees\n- maxEmployees: filter to companies that have no more than that number of employees"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/companies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "companies"
+              ]
+            },
+            "description": "Create a company"
+          },
+          "response": []
+        }
+      ],
+      "description": "Requests for /companies routes"
+    },
+    {
+      "name": "/users",
+      "item": [{
+          "name": "GET /users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Gets a list of users"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /users",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "{\n    \"username\": \"root\",\n    \"password\": \"password\",\n}",
+                "variables": ""
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/auth/token",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "auth",
+                "token"
+              ]
+            },
+            "description": "Creates a new users"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "/jobs",
+      "item": [{
+        "name": "GET /jobs (with filters)",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3001/jobs?minSalary=190000&hasEquity=false&title=Arboriculturist",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3001",
+            "path": [
+              "jobs"
+            ],
+            "query": [{
+                "key": "minSalary",
+                "value": "190000"
+              },
+              {
+                "key": "hasEquity",
+                "value": "false"
+              },
+              {
+                "key": "title",
+                "value": "Arboriculturist"
+              }
+            ]
+          }
+        },
+        "response": []
+      }]
+    }
+  ]
+}
