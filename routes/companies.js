@@ -1,19 +1,18 @@
-"use strict";
+'use strict';
 
 /** Routes for companies. */
 
-const jsonschema = require("jsonschema");
-const express = require("express");
+const jsonschema = require('jsonschema');
+const express = require('express');
 
-const { BadRequestError } = require("../expressError");
-const { ensureLoggedIn } = require("../middleware/auth");
-const Company = require("../models/company");
+const { BadRequestError } = require('../expressError');
+const { ensureLoggedIn, ensureAdmin } = require('../middleware/auth');
+const Company = require('../models/company');
 
-const companyNewSchema = require("../schemas/companyNew.json");
-const companyUpdateSchema = require("../schemas/companyUpdate.json");
+const companyNewSchema = require('../schemas/companyNew.json');
+const companyUpdateSchema = require('../schemas/companyUpdate.json');
 
 const router = new express.Router();
-
 
 /** POST / { company } =>  { company }
  *
@@ -21,14 +20,14 @@ const router = new express.Router();
  *
  * Returns { handle, name, description, numEmployees, logoUrl }
  *
- * Authorization required: login
+ * Authorization required: login, admin
  */
 
-router.post("/", ensureLoggedIn, async function (req, res, next) {
+router.post('/', ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, companyNewSchema);
     if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
+      const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
 
@@ -50,9 +49,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: none
  */
 
-router.get("/", async function (req, res, next) {
+router.get('/', async function (req, res, next) {
   try {
-    const companies = await Company.findAll();
+    const companies = await Company.findAll(req.query);
     return res.json({ companies });
   } catch (err) {
     return next(err);
@@ -67,7 +66,7 @@ router.get("/", async function (req, res, next) {
  * Authorization required: none
  */
 
-router.get("/:handle", async function (req, res, next) {
+router.get('/:handle', async function (req, res, next) {
   try {
     const company = await Company.get(req.params.handle);
     return res.json({ company });
@@ -84,37 +83,46 @@ router.get("/:handle", async function (req, res, next) {
  *
  * Returns { handle, name, description, numEmployees, logo_url }
  *
- * Authorization required: login
+ * Authorization required: login, admin
  */
 
-router.patch("/:handle", ensureLoggedIn, async function (req, res, next) {
-  try {
-    const validator = jsonschema.validate(req.body, companyUpdateSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
-      throw new BadRequestError(errs);
-    }
+router.patch(
+  '/:handle',
+  ensureLoggedIn,
+  ensureAdmin,
+  async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, companyUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
 
-    const company = await Company.update(req.params.handle, req.body);
-    return res.json({ company });
-  } catch (err) {
-    return next(err);
+      const company = await Company.update(req.params.handle, req.body);
+      return res.json({ company });
+    } catch (err) {
+      return next(err);
+    }
   }
-});
+);
 
 /** DELETE /[handle]  =>  { deleted: handle }
  *
- * Authorization: login
+ * Authorization: login, admin
  */
 
-router.delete("/:handle", ensureLoggedIn, async function (req, res, next) {
-  try {
-    await Company.remove(req.params.handle);
-    return res.json({ deleted: req.params.handle });
-  } catch (err) {
-    return next(err);
+router.delete(
+  '/:handle',
+  ensureLoggedIn,
+  ensureAdmin,
+  async function (req, res, next) {
+    try {
+      await Company.remove(req.params.handle);
+      return res.json({ deleted: req.params.handle });
+    } catch (err) {
+      return next(err);
+    }
   }
-});
-
+);
 
 module.exports = router;
